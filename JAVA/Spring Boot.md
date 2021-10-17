@@ -55,18 +55,66 @@ Ordered是二等公民，然后执行，Ordered公民之间通过接口返回值
 ## 扫描装配Bean
 ## 自定义第三方Bean
 ## @Primary和@Quelifier
+https://blog.csdn.net/xiaozhegaa/article/details/89474544
+@Primary：在众多相同的bean中，优先选择用@Primary注解的bean（该注解加在各个bean上）
+
+@Qualifier：在众多相同的bean中，@Qualifier指定需要注入的bean（该注解跟随在@Autowired后）
 ## 带有参数的构造方法类的装配
 ## 条件装配Bean
 ## Bean作用域
 ## 连接点
+https://blog.csdn.net/github_34889651/article/details/51321499
+https://blog.csdn.net/sinolover/article/details/104490634
+连接点（JoinPoint） 这个就更好解释了，就是spring允许你引用通知（Advice）的地方，那可就真多了，基本每个方法的前、后以及前后都包括，或抛出异常时都可以是连接点，spring只支持方法连接点。其他如AspectJ还可以让你将构造器、属性注入作为连接点。不过那不是咱们关注的，只要记住，和方法有关的前前后后都是连接点，也就是可以引入通知的地方都是连接点。
+定义：连接点是一个应用执行过程中能够插入一个切面的点。
+连接点可以是调用方法时、抛出异常时、甚至修改字段时、
+切面代码可以利用这些点插入到应用的正规流程中
+程序执行过程中能够应用通知的所有点。
 ## 切面
+切面（Aspect） 切面是通知和切入点的结合。现在发现了吧，没连接点什么事，连接点就是为了让你好理解切点搞出来的，明白这个概念就行了。通知说明了干什么和什么时候干（什么时候通过方法名中的befor，after，around等就能知道），二切入点说明了在哪干（指定到底是哪个方法），这就是一个完整的切面定义。
+定义：切面是通知和切点的集合，通知和切点共同定义了切面的全部功能——它是什么，在何时何处完成其功能。
 ## 切点
+切入点（Pointcut） 上面说的连接点的基础上，来定义切入点，你的一个类里，有15个方法，那就有十几个连接点了对吧，但是你并不想在所有方法附近都使用通知（使用叫织入，下面再说），你只是想让其中几个，在调用这几个方法之前、之后或者抛出异常时干点什么，那么就用切入点来定义这几个方法，让切点来筛选连接点，选中你想要引入通知的方法。
+定义：如果通知定义了“什么”和“何时”。那么切点就定义了“何处”。切点会匹配通知所要织入的一个或者多个连接点。
+通常使用明确的类或者方法来指定这些切点。
+作用：定义通知被应用的位置（在哪些连接点）
 ## 环绕通知
+https://blog.csdn.net/qq_33576276/article/details/88786090
+指包围一个连接点通知，在被通知的方法调用之前和之后执行自定义的方法。
 ## 引入
+允许我们向现有的类添加新方法属性。这不就是把切面（也就是新方法属性：通知定义的）用到目标类中吗
 ## 通知获取参数
 ## 织入
+ 为了把切面应用到目标对象，而创建一个新的代理对象的过程。有三种方式，spring采用的是运行时，为什么是运行时，在上一文《Spring AOP开发漫谈之初探AOP及AspectJ的用法》中第二个标提到。
 ## 默认数据源
+https://blog.csdn.net/wangmx1993328/article/details/81834974
+Springboot默认支持4种数据源类型，定义在 org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration 中，分别是：
+org.apache.tomcat.jdbc.pool.DataSource
+com.zaxxer.hikari.HikariDataSource
+org.apache.commons.dbcp.BasicDataSource
+org.apache.commons.dbcp2.BasicDataSource
+对于这4种数据源，当 classpath 下有相应的类存在时，Springboot 会通过自动配置为其生成DataSource Bean，DataSource Bean默认只会生成一个，四种数据源类型的生效先后顺序如下：Tomcat--> Hikari --> Dbcp --> Dbcp2 。
 ## 自定义数据源
+https://www.cnblogs.com/guchunchao/p/10043133.html
 ## Spring声明式数据库事务约定
 ## @Transactional的配置项
+https://blog.csdn.net/wangmx1993328/article/details/89644934
+propagation（传播）事务传播行为，默认值为 Propagation.REQUIRED，它是一个枚举，可选值如下：
+
+REQUIRED：如果当前存在事务，则加入该事务，如果当前不存在事务，则创建一个新的事务。required（必须的）。
+SUPPORTS：如果当前存在事务，则加入该事务；如果当前不存在事务，则以非事务方式继续运行。supports（支持的）
+MANDATORY：如果当前存在事务，则加入该事务；如果当前不存在事务，则抛出异常。mandatory（强制的）
+REQUIRES_NEW：重新创建一个新的事务，如果当前存在事务，暂停当前的事务。requires_new（依赖新的）
+NOT_SUPPORTED：以非事务的方式运行，如果当前存在事务，暂停当前的事务。not_supported（不支持的）
+NEVER：以非事务的方式运行，如果当前存在事务，则抛出异常。never（从不）
+NESTED：和 REQUIRED 效果一样。nested（嵌套）
+
+isolation（隔离）事务隔离级别，默认值为 Isolation.DEFAULT，它是一个枚举，可选择如下：
+
+DEFAULT：使用底层数据库默认的隔离级别。
+READ_UNCOMMITTED：未提交读。无法防止。
+READ_COMMITTED：可提交读。可以防止脏读。
+REPEATABLE_READ：可重复读。可以防止脏读、可重复读。mysql 默认隔离级别。
+SERIALIZABLE：串行事务。最高事务隔离级别，可以防止脏读、可重复读、幻读。
 ## 线程池
+https://blog.csdn.net/yu102655/article/details/114846051
